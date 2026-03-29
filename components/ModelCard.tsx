@@ -1,6 +1,7 @@
 "use client";
 
 import type { ModelId, ModelState } from "@/types";
+import DiffText from "@/components/DiffText";
 
 interface Props {
   modelId: ModelId;
@@ -25,35 +26,6 @@ function fmt(ms: number | null): string {
   return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${Math.round(ms)}ms`;
 }
 
-function DiffText({
-  reference,
-  hypothesis,
-}: {
-  reference: string;
-  hypothesis: string;
-}) {
-  const refWords = reference
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .split(/\s+/)
-    .filter(Boolean);
-  const hypWords = hypothesis.split(/\s+/).filter(Boolean);
-
-  return (
-    <p className="text-sm text-gray-200 leading-relaxed">
-      {hypWords.map((word, i) => {
-        const clean = word.toLowerCase().replace(/[^\w]/g, "");
-        const match = refWords.some((r) => r === clean);
-        return (
-          <span key={i} className={match ? "" : "text-red-400 underline"}>
-            {word}
-            {i < hypWords.length - 1 ? " " : ""}
-          </span>
-        );
-      })}
-    </p>
-  );
-}
 
 export default function ModelCard({ modelId, state, referenceText }: Props) {
   const isActive = state.status === "transcribing";
@@ -136,7 +108,7 @@ export default function ModelCard({ modelId, state, referenceText }: Props) {
       </div>
 
       {/* Transcription output */}
-      <div className="min-h-[4rem] rounded-lg bg-gray-900 border border-gray-700 p-3">
+      <div className="min-h-16 rounded-lg bg-gray-900 border border-gray-700 p-3">
         {state.status === "transcribing" && (
           <p className="text-xs text-blue-400 animate-pulse">Transcribing…</p>
         )}
