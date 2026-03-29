@@ -25,13 +25,10 @@ export default function DownloadPanel({ modelStates }: Props) {
   );
   const anyError = entries.some(([, s]) => s.status === "error");
 
-  // Hide once everything is loaded (and there are no errors to show)
-  if (allSettled && !anyError) return null;
-
   return (
     <div className="w-full rounded-xl bg-gray-800 border border-gray-700 p-5 space-y-4">
       <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-        Downloading models…
+        {allSettled && !anyError ? "Models ready" : "Downloading models…"}
       </h2>
       {entries.map(([modelId, state]) => (
         <div key={modelId}>
