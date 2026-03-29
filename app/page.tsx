@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { MODEL_IDS, type ModelId, type ModelState, type WorkerOutbound } from "@/types";
 import { blobToFloat32Array } from "@/lib/audio";
 import { computeWER, computeCharSimilarity } from "@/lib/metrics";
 import { useMicPermission } from "@/hooks/useMicPermission";
+import { useCacheManager } from "@/hooks/useCacheManager";
 import ReferenceInput from "@/components/ReferenceInput";
 import RecordButton from "@/components/RecordButton";
 import ModelCard from "@/components/ModelCard";
@@ -31,7 +32,8 @@ type State = {
 type Action =
   | { type: "SET_REFERENCE"; text: string }
   | { type: "SET_TRANSCRIBING"; value: boolean }
-  | { type: "UPDATE_MODEL"; modelId: ModelId; patch: Partial<ModelState> };
+  | { type: "UPDATE_MODEL"; modelId: ModelId; patch: Partial<ModelState> }
+  | { type: "RESET_MODELS" };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -50,6 +52,14 @@ function reducer(state: State, action: Action): State {
           },
         },
       };
+    case "RESET_MODELS":
+      return {
+        ...state,
+        isTranscribing: false,
+        modelStates: Object.fromEntries(
+          MODEL_IDS.map((id) => [id, initialModelState()])
+        ) as Record<ModelId, ModelState>,
+      };
   }
 }
 
@@ -64,6 +74,9 @@ const initialState: State = {
 export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { permission: micPermission, requestPermission, reportGranted, reportDenied } = useMicPermission();
+  const { cacheSize, isClearing, clearCache } = useCacheManager();
+  const [workerKey, setWorkerKey] = useState(0);
+  const [shouldAutoLoad, setShouldAutoLoad] = useState(true);
   const workerRef = useRef<Worker | null>(null);
 
   // Resolvers keyed by modelId — used to await MODEL_READY / TRANSCRIPTION_RESULT
@@ -76,7 +89,7 @@ export default function Home() {
     []
   );
 
-  // Boot worker and load models sequentially on mount
+  // Boot worker; optionally load models sequentially (controlled by shouldAutoLoad)
   useEffect(() => {
     const worker = new Worker(
       new URL("../workers/whisper.worker.ts", import.meta.url),
@@ -114,22 +127,23 @@ export default function Home() {
       }
     };
 
-    // Load models sequentially: tiny → base → small
-    (async () => {
-      for (const modelId of MODEL_IDS) {
-        try {
-          await new Promise<void>((resolve, reject) => {
-            resolversRef.current.set(`load:${modelId}`, { resolve, reject });
-            worker.postMessage({ type: "LOAD_MODEL", modelId });
-          });
-        } catch {
-          // Error already dispatched to state
+    if (shouldAutoLoad) {
+      (async () => {
+        for (const modelId of MODEL_IDS) {
+          try {
+            await new Promise<void>((resolve, reject) => {
+              resolversRef.current.set(`load:${modelId}`, { resolve, reject });
+              worker.postMessage({ type: "LOAD_MODEL", modelId });
+            });
+          } catch {
+            // Error already dispatched to state
+          }
         }
-      }
-    })();
+      })();
+    }
 
     return () => worker.terminate();
-  }, [updateModel]);
+  }, [updateModel, workerKey, shouldAutoLoad]);
 
   // Enable recording once every model has finished loading (ready/done/error — not still downloading)
   const allModelsSettled = MODEL_IDS.every(
@@ -144,6 +158,22 @@ export default function Home() {
       state.modelStates[id].status === "done"
   );
   const allModelsReady = allModelsSettled && atLeastOneReady;
+
+  const allModelsIdle = MODEL_IDS.every(
+    (id) => state.modelStates[id].status === "idle"
+  );
+
+  const handleClearCache = useCallback(async () => {
+    await clearCache();
+    dispatch({ type: "RESET_MODELS" });
+    setShouldAutoLoad(false);
+    setWorkerKey((k) => k + 1);
+  }, [clearCache]);
+
+  const handleDownloadModels = useCallback(() => {
+    setShouldAutoLoad(true);
+    setWorkerKey((k) => k + 1);
+  }, []);
 
   const handleRecordingComplete = useCallback(
     async (blob: Blob) => {
@@ -222,6 +252,11 @@ export default function Home() {
           <SettingsBar
             micPermission={micPermission}
             onRequestMicPermission={requestPermission}
+            cacheSize={cacheSize}
+            isClearing={isClearing}
+            modelsIdle={allModelsIdle}
+            onClearCache={handleClearCache}
+            onDownloadModels={handleDownloadModels}
           />
         </div>
 
