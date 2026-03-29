@@ -19,7 +19,7 @@ when models are downloaded, they are kept in browser's storage which is good
 - [x] add an explicit toggle to allow mic usage when first time
 - [ ] use `src/` folder
 - [ ] fix record button not centered on mobile
-- [ ] show tests history
+- [x] show tests history
 - [x] create `/merge-main` command that merges current branch to main and asks to increment either patch, minor or major version and update it in package.json, and then add a tag with the same version on main
 - [x] implement a mechanism to clear the cache storage
 - [ ] convert this app into PWA
