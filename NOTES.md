@@ -4,6 +4,7 @@
 
 ## TODOS
 
+- [ ] add an explicit toggle to allow mic usage when first time
 - [ ] use `src/` folder
 - [ ] fix record button not centered on mobile
 - [ ] show tests history
