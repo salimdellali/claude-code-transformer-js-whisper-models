@@ -9,6 +9,8 @@ export const MODEL_IDS = [
 
 export type ModelId = (typeof MODEL_IDS)[number];
 
+export type MicPermissionState = "prompt" | "granted" | "denied" | "unsupported";
+
 export type ModelStatus =
   | "idle"
   | "downloading"

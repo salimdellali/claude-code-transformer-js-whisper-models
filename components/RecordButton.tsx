@@ -5,9 +5,11 @@ import { useEffect, useRef, useState } from "react";
 interface Props {
   onRecordingComplete: (blob: Blob) => void;
   disabled?: boolean;
+  reportGranted: () => void;
+  reportDenied: () => void;
 }
 
-export default function RecordButton({ onRecordingComplete, disabled }: Props) {
+export default function RecordButton({ onRecordingComplete, disabled, reportGranted, reportDenied }: Props) {
   const [isRecording, setIsRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -26,6 +28,7 @@ export default function RecordButton({ onRecordingComplete, disabled }: Props) {
     if (disabled || isRecording) return;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      reportGranted();
       streamRef.current = stream;
       chunksRef.current = [];
 
@@ -39,7 +42,7 @@ export default function RecordButton({ onRecordingComplete, disabled }: Props) {
       setElapsed(0);
       timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
     } catch {
-      alert("Microphone access denied.");
+      reportDenied();
     }
   };
 
