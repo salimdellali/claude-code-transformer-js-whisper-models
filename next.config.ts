@@ -1,4 +1,11 @@
 import type { NextConfig } from "next";
+import withSerwistInit from "@serwist/next";
+
+const withSerwist = withSerwistInit({
+  swSrc: "app/sw.ts",
+  swDest: "public/sw.js",
+  disable: process.env.NODE_ENV !== "production",
+});
 
 const nextConfig: NextConfig = {
   // Turbopack config (Next.js 16 default bundler)
@@ -9,7 +16,7 @@ const nextConfig: NextConfig = {
       "onnxruntime-node": {},
     },
   },
-  // Webpack fallback (for `next build --webpack`)
+  // Webpack fallback (for `next build`)
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -20,4 +27,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSerwist(nextConfig);
