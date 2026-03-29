@@ -1,16 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { MODEL_IDS, type ModelId, type ModelState, type WorkerOutbound } from "@/types";
+import { MODEL_IDS, type ModelId, type ModelState, type WorkerOutbound, type HistoryEntry } from "@/types";
 import { blobToFloat32Array } from "@/lib/audio";
 import { computeWER, computeCharSimilarity } from "@/lib/metrics";
 import { useMicPermission } from "@/hooks/useMicPermission";
 import { useCacheManager } from "@/hooks/useCacheManager";
+import { useTranscriptionHistory } from "@/hooks/useTranscriptionHistory";
 import ReferenceInput from "@/components/ReferenceInput";
 import RecordButton from "@/components/RecordButton";
 import ModelCard from "@/components/ModelCard";
 import DownloadPanel from "@/components/DownloadPanel";
 import SettingsBar from "@/components/SettingsBar";
+import HistoryTable from "@/components/HistoryTable";
 
 const initialModelState = (): ModelState => ({
   status: "idle",
@@ -75,6 +77,7 @@ export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { permission: micPermission, requestPermission, reportGranted, reportDenied } = useMicPermission();
   const { cacheSize, isClearing, clearCache } = useCacheManager();
+  const { entries, addEntry, deleteEntry } = useTranscriptionHistory();
   const [workerKey, setWorkerKey] = useState(0);
   const [shouldAutoLoad, setShouldAutoLoad] = useState(true);
   const workerRef = useRef<Worker | null>(null);
@@ -190,6 +193,7 @@ export default function Home() {
       }
 
       const refText = state.referenceText.trim();
+      const historyResults: HistoryEntry["results"] = {};
 
       for (const modelId of MODEL_IDS) {
         if (state.modelStates[modelId].status === "error") continue;
@@ -212,13 +216,23 @@ export default function Home() {
             );
           });
 
+          const wer = refText ? computeWER(refText, result.text) : null;
+          const charSimilarity = refText ? computeCharSimilarity(refText, result.text) : null;
+
           updateModel(modelId, {
             status: "done",
             transcription: result.text,
             inferenceTime: result.inferenceTime,
-            wer: refText ? computeWER(refText, result.text) : null,
-            charSimilarity: refText ? computeCharSimilarity(refText, result.text) : null,
+            wer,
+            charSimilarity,
           });
+
+          historyResults[modelId] = {
+            transcription: result.text,
+            inferenceTime: result.inferenceTime,
+            wer,
+            charSimilarity,
+          };
         } catch (err) {
           updateModel(modelId, {
             status: "error",
@@ -227,9 +241,13 @@ export default function Home() {
         }
       }
 
+      if (Object.keys(historyResults).length > 0) {
+        addEntry({ referenceText: refText, results: historyResults });
+      }
+
       dispatch({ type: "SET_TRANSCRIBING", value: false });
     },
-    [state.isTranscribing, state.modelStates, state.referenceText, updateModel]
+    [state.isTranscribing, state.modelStates, state.referenceText, updateModel, addEntry]
   );
 
   return (
@@ -297,6 +315,8 @@ export default function Home() {
           ))}
         </div>
 
+        {/* Transcription history */}
+        <HistoryTable entries={entries} onDelete={deleteEntry} />
 
       </div>
     </main>

@@ -11,6 +11,22 @@ export type ModelId = (typeof MODEL_IDS)[number];
 
 export type MicPermissionState = "prompt" | "granted" | "denied" | "unsupported";
 
+export interface HistoryEntry {
+  id: string;
+  referenceText: string;
+  results: Partial<
+    Record<
+      ModelId,
+      {
+        transcription: string;
+        inferenceTime: number | null;
+        wer: number | null;
+        charSimilarity: number | null;
+      }
+    >
+  >;
+}
+
 export type ModelStatus =
   | "idle"
   | "downloading"
