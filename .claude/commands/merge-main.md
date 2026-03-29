@@ -32,7 +32,7 @@ Edit the `version` field in `package.json` to the new version string.
 Then commit the change on the current branch:
 ```
 git add package.json
-git commit -m "chore: bump version to v<new-version>"
+git commit -m "claude (chore): bump version to v<new-version>"
 ```
 
 ## Step 6 — Merge to main
