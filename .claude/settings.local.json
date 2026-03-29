@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(bunx tsc:*)",
+      "Bash(bun run:*)"
     ]
   }
 }
