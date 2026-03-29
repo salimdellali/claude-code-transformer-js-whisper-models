@@ -4,10 +4,12 @@ import { useCallback, useEffect, useReducer, useRef } from "react";
 import { MODEL_IDS, type ModelId, type ModelState, type WorkerOutbound } from "@/types";
 import { blobToFloat32Array } from "@/lib/audio";
 import { computeWER, computeCharSimilarity } from "@/lib/metrics";
+import { useMicPermission } from "@/hooks/useMicPermission";
 import ReferenceInput from "@/components/ReferenceInput";
 import RecordButton from "@/components/RecordButton";
 import ModelCard from "@/components/ModelCard";
 import DownloadPanel from "@/components/DownloadPanel";
+import SettingsBar from "@/components/SettingsBar";
 
 const initialModelState = (): ModelState => ({
   status: "idle",
@@ -61,6 +63,7 @@ const initialState: State = {
 
 export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { permission: micPermission, requestPermission, reportGranted, reportDenied } = useMicPermission();
   const workerRef = useRef<Worker | null>(null);
 
   // Resolvers keyed by modelId — used to await MODEL_READY / TRANSCRIPTION_RESULT
@@ -203,17 +206,23 @@ export default function Home() {
     <main className="min-h-screen bg-gray-950 text-white px-4 py-10">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Whisper Model Benchmark
-          </h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Compare{" "}
-            <span className="font-mono text-gray-300">whisper-tiny</span>,{" "}
-            <span className="font-mono text-gray-300">whisper-base</span>, and{" "}
-            <span className="font-mono text-gray-300">whisper-small</span> —
-            transcription quality vs speed
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Whisper Model Benchmark
+            </h1>
+            <p className="text-gray-400 text-sm mt-1">
+              Compare{" "}
+              <span className="font-mono text-gray-300">whisper-tiny</span>,{" "}
+              <span className="font-mono text-gray-300">whisper-base</span>, and{" "}
+              <span className="font-mono text-gray-300">whisper-small</span> —
+              transcription quality vs speed
+            </p>
+          </div>
+          <SettingsBar
+            micPermission={micPermission}
+            onRequestMicPermission={requestPermission}
+          />
         </div>
 
         {/* Download progress (hidden once all ready) */}
@@ -235,6 +244,8 @@ export default function Home() {
             <RecordButton
               onRecordingComplete={handleRecordingComplete}
               disabled={!allModelsReady || state.isTranscribing}
+              reportGranted={reportGranted}
+              reportDenied={reportDenied}
             />
           </div>
         </div>
