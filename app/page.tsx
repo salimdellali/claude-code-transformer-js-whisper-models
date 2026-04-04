@@ -282,7 +282,7 @@ export default function Home() {
         <DownloadPanel modelStates={state.modelStates} />
 
         {/* Reference text + record */}
-        <div className="flex flex-col sm:flex-row gap-6 items-start">
+        <div className="flex flex-col sm:flex-row gap-6 sm:items-start">
           <div className="flex-1">
             <ReferenceInput
               value={state.referenceText}
