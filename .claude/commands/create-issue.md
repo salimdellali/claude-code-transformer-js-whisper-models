@@ -10,7 +10,7 @@ If the user provided a description or title with the command, use it as the star
 
 Based on what the user provided, draft:
 
-- **Title**: concise, imperative (e.g. "Add dark mode toggle", "Fix crash on empty input")
+- **Title**: prefixed with `(claude)` followed by a concise, imperative description (e.g. "(claude) Add dark mode toggle", "(claude) Fix crash on empty input")
 - **Body**: use this template:
 
 ```
@@ -24,8 +24,6 @@ Based on what the user provided, draft:
 - [ ] <testable condition 1>
 - [ ] <testable condition 2>
 
----
-🤖 Opened with [Claude Code](https://claude.ai/code)
 ```
 
 Show the full draft to the user and ask: **"Looks good, or any changes?"**

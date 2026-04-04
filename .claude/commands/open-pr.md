@@ -16,7 +16,7 @@ Check the branch name for an issue number encoded as `#<number>` (e.g. `claude/f
 
 Run `git log main..HEAD --oneline` to see the commits on this branch.
 
-Derive a clear PR title from the branch name and commits (imperative, concise).
+Derive a clear PR title prefixed with `(claude)` followed by an imperative, concise description (e.g. "(claude) Add dark mode toggle").
 
 Build the PR body using this template:
 

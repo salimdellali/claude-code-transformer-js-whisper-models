@@ -50,9 +50,15 @@ git tag -a v<new-version> -m "v<new-version>"
 
 Confirm the tag was created by running `git tag --list v<new-version>`.
 
-## Step 8 — Summary
+## Step 8 — Push to origin
+
+```
+git push origin main && git push origin v<new-version>
+```
+
+## Step 9 — Summary
 
 Tell the user:
 - The branch that was merged
 - The new version (`v<new-version>`)
-- That they can push with: `git push origin main && git push origin v<new-version>`
+- That main and the tag have been pushed to origin
