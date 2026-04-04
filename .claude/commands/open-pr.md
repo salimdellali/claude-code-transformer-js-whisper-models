@@ -10,7 +10,9 @@ Run `git branch --show-current`. If the result is `main` or `master`, stop and t
 
 Check the branch name for an issue number encoded as `#<number>` (e.g. `claude/feat/add-dark-mode#42`):
 - If found: extract it and tell the user "I found linked issue #<number> — I'll close it when this PR merges."
-- If not found: ask "Is this related to a GitHub issue? Provide the number to link it, or press enter to skip."
+- If not found: prompt:
+  > `n` — no linked issue, skip
+  > or type the issue number (e.g. `4`)
 
 ## Step 3 — Build the PR title and body
 
@@ -36,7 +38,10 @@ Closes #<number>
 
 (`Closes #N` is the GitHub magic keyword — it auto-links and closes the issue when the PR merges.)
 
-Show the full title and body to the user and ask: "Looks good, or any changes?"
+Show the full title and body to the user and prompt:
+> `y` — looks good, push and create the PR
+> `n` — cancel
+> or type your change (e.g. "change the title", "add a test step")
 
 ## Step 4 — Push the branch
 

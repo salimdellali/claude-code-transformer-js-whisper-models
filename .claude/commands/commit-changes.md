@@ -15,9 +15,9 @@ Read the staged and unstaged changes with `git diff HEAD` to understand what cha
 - `claude (refactor): <description>` for code refactors
 - `claude (docs): <description>` for documentation changes
 
-Present the suggestion and ask: "Does this commit message work, or would you like to provide your own?"
-
-Wait for the user's response before continuing.
+Present the suggestion and prompt:
+> `y` — use this message
+> or type your own message
 
 ## Step 3 — Confirm the commit message
 

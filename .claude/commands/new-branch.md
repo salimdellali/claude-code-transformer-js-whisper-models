@@ -17,7 +17,10 @@ This lets `/open-pr` auto-detect the linked issue later.
 
 ## Step 2 — Check git status
 
-Run `git status` to confirm the repo is clean (or note any uncommitted work). If the working tree is dirty, tell the user and ask whether to stash, commit, or abort.
+Run `git status` to confirm the repo is clean (or note any uncommitted work). If the working tree is dirty, prompt:
+> `stash` — stash changes and proceed
+> `commit` — commit changes first
+> `abort` — stop here
 
 ## Step 3 — Create and switch to the branch
 

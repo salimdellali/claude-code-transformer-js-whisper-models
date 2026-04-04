@@ -26,7 +26,10 @@ Based on what the user provided, draft:
 
 ```
 
-Show the full draft to the user and ask: **"Looks good, or any changes?"**
+Show the full draft to the user and prompt:
+> `y` — looks good, proceed to labels
+> `n` — cancel
+> or type your change (e.g. "make the title shorter", "add a step about caching")
 
 ## Step 3 — Determine labels
 
@@ -37,7 +40,9 @@ Suggest one additional label based on the content:
 - `enhancement` — new feature or improvement
 - `question` — needs clarification before work begins
 
-Run `gh label list` first and suggest from existing labels. Ask the user to confirm or change the additional label.
+Run `gh label list` first and suggest one label. Prompt:
+> `y` — use suggested label
+> or type a different label name
 
 ## Step 4 — Publish the issue
 
@@ -51,6 +56,6 @@ gh issue create --title "<title>" --body "<body>" --label "<label1>,<label2>"
 
 Print the issue URL returned by `gh issue create`.
 
-Then ask: **"Should I start working on this now?"**
-- If yes → invoke `/new-branch` with the issue title and number as context, then begin implementation
-- If no → done
+Then prompt:
+> `y` — start working on it now (invokes `/new-branch` and begins implementation)
+> `n` — done for now

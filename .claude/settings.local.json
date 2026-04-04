@@ -10,7 +10,9 @@
       "Bash(git merge:*)",
       "Bash(git tag:*)",
       "Bash(cat /Users/macbook/Desktop/www/claude-code-transformer-js-whisper-models/next.config.*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(gh label:*)",
+      "Bash(gh issue:*)"
     ]
   }
 }
