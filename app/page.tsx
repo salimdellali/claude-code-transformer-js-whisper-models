@@ -80,6 +80,7 @@ export default function Home() {
   const { entries, addEntry, deleteEntry } = useTranscriptionHistory();
   const [workerKey, setWorkerKey] = useState(0);
   const [shouldAutoLoad, setShouldAutoLoad] = useState(true);
+  const [modelsExpanded, setModelsExpanded] = useState(true);
   const workerRef = useRef<Worker | null>(null);
 
   // Resolvers keyed by modelId — used to await MODEL_READY / TRANSCRIPTION_RESULT
@@ -278,11 +279,46 @@ export default function Home() {
           />
         </div>
 
-        {/* Download progress (hidden once all ready) */}
-        <DownloadPanel modelStates={state.modelStates} />
+        {/* Models collapsible */}
+        <div>
+          <button
+            onClick={() => setModelsExpanded((v) => !v)}
+            className="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors mb-3"
+          >
+            <svg
+              className={`w-4 h-4 transition-transform ${modelsExpanded ? "rotate-90" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            Models
+            {!modelsExpanded && (
+              <span className="text-xs text-gray-600">
+                ({allModelsReady ? "ready" : "loading…"})
+              </span>
+            )}
+          </button>
+          {modelsExpanded && (
+            <div className="space-y-4">
+              <DownloadPanel modelStates={state.modelStates} />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {MODEL_IDS.map((modelId) => (
+                  <ModelCard
+                    key={modelId}
+                    modelId={modelId}
+                    state={state.modelStates[modelId]}
+                    referenceText={state.referenceText}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Reference text + record */}
-        <div className="flex flex-col sm:flex-row gap-6 items-start">
+        <div className="flex flex-col sm:flex-row gap-6 sm:items-start">
           <div className="flex-1">
             <ReferenceInput
               value={state.referenceText}
@@ -293,7 +329,7 @@ export default function Home() {
               Providing reference text enables WER and similarity scoring.
             </p>
           </div>
-          <div className="flex items-center justify-center pt-6">
+          <div className="flex items-center justify-center pt-6 w-full sm:w-auto">
             <RecordButton
               onRecordingComplete={handleRecordingComplete}
               disabled={!allModelsReady || state.isTranscribing}
@@ -301,18 +337,6 @@ export default function Home() {
               reportDenied={reportDenied}
             />
           </div>
-        </div>
-
-        {/* Model result cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {MODEL_IDS.map((modelId) => (
-            <ModelCard
-              key={modelId}
-              modelId={modelId}
-              state={state.modelStates[modelId]}
-              referenceText={state.referenceText}
-            />
-          ))}
         </div>
 
         {/* Transcription history */}
