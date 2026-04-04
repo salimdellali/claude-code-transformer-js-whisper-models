@@ -10,6 +10,11 @@ Derive a short, kebab-case branch name from the user's request:
 - Refactors → `claude/refactor/<short-description>` (e.g. `claude/refactor/add-user-function`)
 - Keep it under 50 characters total
 
+If the user provides a GitHub issue number (or this command was chained from `/create-issue`), append it to the branch name:
+- e.g. `claude/feat/add-login-page#42`
+
+This lets `/open-pr` auto-detect the linked issue later.
+
 ## Step 2 — Check git status
 
 Run `git status` to confirm the repo is clean (or note any uncommitted work). If the working tree is dirty, tell the user and ask whether to stash, commit, or abort.

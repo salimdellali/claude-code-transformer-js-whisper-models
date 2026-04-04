@@ -22,9 +22,14 @@ when models are downloaded, they are kept in browser's storage which is good
 - [x] show tests history
 - [x] create `/merge-main` command that merges current branch to main and asks to increment either patch, minor or major version and update it in package.json, and then add a tag with the same version on main
 - [x] implement a mechanism to clear the cache storage
-- [ ] convert this app into PWA
+- [x] convert this app into PWA
+- [ ] disable the record button if no permission
+- [ ] mobile: record button not working properly
+- [ ] mobile: add a button to force install PWA on mobile
+- [ ] fix clear cache button not updating one first time page load
 
 ## LEARN
 
 - [ ] Browser's cache storage (DevTools -> Application -> Cache Storage)
 - [ ] Browser's IndexedDB (DevTools -> Application -> IndexedDB)
+- [ ] Install Vercel Coding Agent Plugin: Turn your coding agent into a Vercel expert. Simply copy and run this in your terminal to install the plugin. Available for Claude, Cursor and Codex. `npx plugins add vercel/vercel-plugin`
