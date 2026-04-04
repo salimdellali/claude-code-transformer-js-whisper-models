@@ -293,7 +293,7 @@ export default function Home() {
               Providing reference text enables WER and similarity scoring.
             </p>
           </div>
-          <div className="flex items-center justify-center pt-6">
+          <div className="flex items-center justify-center pt-6 w-full sm:w-auto">
             <RecordButton
               onRecordingComplete={handleRecordingComplete}
               disabled={!allModelsReady || state.isTranscribing}
