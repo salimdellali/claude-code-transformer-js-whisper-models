@@ -279,7 +279,7 @@ export default function Home() {
           />
         </div>
 
-        {/* Models collapsible */}
+        {/* Download panel — collapsible */}
         <div>
           <button
             onClick={() => setModelsExpanded((v) => !v)}
@@ -300,21 +300,7 @@ export default function Home() {
               </span>
             )}
           </button>
-          {modelsExpanded && (
-            <div className="space-y-4">
-              <DownloadPanel modelStates={state.modelStates} />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {MODEL_IDS.map((modelId) => (
-                  <ModelCard
-                    key={modelId}
-                    modelId={modelId}
-                    state={state.modelStates[modelId]}
-                    referenceText={state.referenceText}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          {modelsExpanded && <DownloadPanel modelStates={state.modelStates} />}
         </div>
 
         {/* Reference text + record */}
@@ -337,6 +323,18 @@ export default function Home() {
               reportDenied={reportDenied}
             />
           </div>
+        </div>
+
+        {/* Model performance cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {MODEL_IDS.map((modelId) => (
+            <ModelCard
+              key={modelId}
+              modelId={modelId}
+              state={state.modelStates[modelId]}
+              referenceText={state.referenceText}
+            />
+          ))}
         </div>
 
         {/* Transcription history */}
