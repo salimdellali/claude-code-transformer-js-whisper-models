@@ -6,12 +6,18 @@ When this command is invoked, follow these steps exactly:
 
 Read `package.json` and extract the current `version` field. Display it to the user.
 
-## Step 2 — Ask which semver segment to bump
+## Step 2 — Suggest which semver segment to bump
 
-Prompt:
-> `patch` — bug fixes, small tweaks (e.g. 1.4.1 → 1.4.2)
-> `minor` — new features, backwards-compatible (e.g. 1.4.1 → 1.5.0)
-> `major` — breaking changes (e.g. 1.4.1 → 2.0.0)
+Run `git log main..HEAD --oneline` to read the commits on the current branch.
+
+Based on the commit types, suggest one of:
+- `patch` — if all commits are `fix` or `chore`
+- `minor` — if any commit is `feat`
+- `major` — if any commit contains a breaking change
+
+State your suggestion and reasoning in one sentence, then prompt:
+> `y` — use suggested bump
+> `patch` / `minor` / `major` — override
 
 ## Step 3 — Calculate the new version
 
