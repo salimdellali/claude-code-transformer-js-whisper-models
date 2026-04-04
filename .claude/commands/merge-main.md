@@ -8,9 +8,10 @@ Read `package.json` and extract the current `version` field. Display it to the u
 
 ## Step 2 — Ask which semver segment to bump
 
-Ask the user: "Which part of the version should be incremented: **patch**, **minor**, or **major**?"
-
-Wait for their answer before continuing.
+Prompt:
+> `patch` — bug fixes, small tweaks (e.g. 1.4.1 → 1.4.2)
+> `minor` — new features, backwards-compatible (e.g. 1.4.1 → 1.5.0)
+> `major` — breaking changes (e.g. 1.4.1 → 2.0.0)
 
 ## Step 3 — Calculate the new version
 
@@ -23,7 +24,10 @@ Tell the user the new version before proceeding.
 
 ## Step 4 — Check for uncommitted changes
 
-Run `git status`. If the working tree is dirty, tell the user and ask whether to commit the changes first, stash them, or abort. Do not proceed until the tree is clean.
+Run `git status`. If the working tree is dirty, prompt:
+> `commit` — stage and commit changes first
+> `stash` — stash changes and proceed
+> `abort` — stop here
 
 ## Step 5 — Update package.json
 
