@@ -9,9 +9,9 @@ Run `git status` and display the output to the user so they can see what will be
 ## Step 2 — Suggest a commit message
 
 Read the staged and unstaged changes with `git diff HEAD` to understand what changed, then suggest a concise commit message following the conventional commits format:
-- `claude (feat): <description>` for new features
+- `claude (feat): <description>` for new **app** features visible to the user
 - `claude (fix): <description>` for bug fixes
-- `claude (chore): <description>` for maintenance tasks
+- `claude (chore): <description>` for maintenance tasks — including changes to claude commands, workflow tooling, CI, config, or anything that improves the dev process but adds no user-facing feature
 - `claude (refactor): <description>` for code refactors
 - `claude (docs): <description>` for documentation changes
 
