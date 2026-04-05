@@ -318,7 +318,7 @@ export default function Home() {
           <div className="flex items-center justify-center pt-6 w-full sm:w-auto">
             <RecordButton
               onRecordingComplete={handleRecordingComplete}
-              disabled={!allModelsReady || state.isTranscribing}
+              disabled={!allModelsReady || state.isTranscribing || micPermission !== "granted"}
               reportGranted={reportGranted}
               reportDenied={reportDenied}
             />
