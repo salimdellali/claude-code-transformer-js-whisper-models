@@ -7,9 +7,9 @@ interface Props {
 }
 
 const MODEL_SIZES: Record<ModelId, string> = {
-  "Xenova/whisper-tiny": "~75 MB",
-  "Xenova/whisper-base": "~145 MB",
-  "Xenova/whisper-small": "~466 MB",
+  "Xenova/whisper-tiny": "~39 MB",
+  "Xenova/whisper-base": "~74 MB",
+  "Xenova/whisper-small": "~237 MB",
 };
 
 const MODEL_LABELS: Record<ModelId, string> = {
